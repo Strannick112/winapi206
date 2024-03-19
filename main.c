@@ -75,16 +75,18 @@ LRESULT CALLBACK MainWinProc(HWND hw,UINT msg,WPARAM wp,LPARAM lp) {
             else { /* все остальные команды */
                 if ((HIWORD(wp) == 0) && (LOWORD(wp) == ID_MYBUTTON))
                     MessageBox(hw, "You pressed my button", "MessageBox", MB_OK | MB_ICONWARNING);
-                if ((HIWORD(wp) == 0) && (LOWORD(wp) == ID_ROMAN_MYBUTTON))
+                if ((HIWORD(wp) == 0) && (LOWORD(wp) == ID_ROMAN_MYBUTTON)){
                     MessageBox(hw, "Roma is my button", "Roma Info", MB_OK | MB_ICONWARNING);
+                    wsprintf(buf, "Command code: %d", LOWORD(wp));
+                    DialogBox(h, "Ex4_Dlg", hw, DlgProc);
+                }
                 if ((HIWORD(wp) == 0) && (LOWORD(wp) >= 3 && (LOWORD(wp) < 8)))
                     MessageBox(hw, "There is PyCharm", "PyCharm", MB_OK | MB_ICONWARNING);
 
 //                    system("\"C:\\Program Files\\JetBrains\\PyCharm Community Edition 2023.1\\bin\\pycharm64.exe\"");
 //                MessageBox(hw, "This is Misha", "Misha Info", MB_OK | MB_ICONWARNING);
 
-                wsprintf(buf, "Command code: %d", LOWORD(wp));
-                DialogBox(h, "Ex4_Dlg", hw, DlgProc);
+
                 return 0;
             }
         case WM_DESTROY:
