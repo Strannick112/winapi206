@@ -7,7 +7,7 @@ Ex4_Menu MENU
  POPUP "&File"
  {
   MENUITEM "&Open...\tCtrl-O", 2
-  MENUITEM "&Save", 3
+  MENUITEM "&Save", 1
   MENUITEM "Save &As...", 4
   MENUITEM SEPARATOR
   MENUITEM "&Hex view", 5, CHECKED GRAYED
