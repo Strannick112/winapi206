@@ -4,6 +4,9 @@ LRESULT CALLBACK MainWinProc(HWND,UINT,WPARAM,LPARAM);
 #define ID_MYBUTTON 1    /* идентификатор для кнопочки внутри главного окна */
 #define ID_ROMAN_MYBUTTON 2    /* идентификатор для кнопочки внутри главного окна */
 
+char buf[256]=""; /* строка для текстового поля в диалоге */
+HINSTANCE h;      /* дескриптор экземпляра программы */
+
 int WINAPI WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int ss) {
     /* создаем и регистрируем класс главного окна */
     WNDCLASS wc;
@@ -33,6 +36,17 @@ int WINAPI WinMain(HINSTANCE hInst,HINSTANCE,LPSTR,int ss) {
     return msg.wParam;
 }
 
+BOOL CALLBACK DlgProc(HWND hw, UINT msg, WPARAM wp, LPARAM lp) {
+    switch (msg) {
+        case WM_INITDIALOG: /* сообщение о создании диалога */
+            SetDlgItemText(hw,1,buf);
+            return TRUE;
+        case WM_COMMAND:    /* сообщение от управляющих элементов */
+            if (LOWORD(wp)==2) EndDialog(hw,0);
+    }
+    return FALSE;
+}
+
 /* процедура обработки сообщений для главного окна */
 LRESULT CALLBACK MainWinProc(HWND hw,UINT msg,WPARAM wp,LPARAM lp) {
     switch (msg) {
@@ -56,15 +70,23 @@ LRESULT CALLBACK MainWinProc(HWND hw,UINT msg,WPARAM wp,LPARAM lp) {
         case WM_COMMAND:
             /* нажата наша кнопочка? */
 
-            if ((HIWORD(wp) == 0) && (LOWORD(wp) == ID_MYBUTTON))
-                MessageBox(hw, "You pressed my button", "MessageBox", MB_OK | MB_ICONWARNING);
-            if ((HIWORD(wp) == 0) && (LOWORD(wp) == ID_ROMAN_MYBUTTON))
-                MessageBox(hw, "Roma is my button", "Roma Info", MB_OK | MB_ICONWARNING);
-            if ((HIWORD(wp) == 0) && (LOWORD(wp) >= 3 && (LOWORD(wp) < 8)))
-                system("\"C:\\Program Files\\JetBrains\\PyCharm Community Edition 2023.1\\bin\\pycharm64.exe\"");
+            if (LOWORD(wp) == 6)  /* команда меню Exit */
+                PostQuitMessage(0);
+            else { /* все остальные команды */
+                if ((HIWORD(wp) == 0) && (LOWORD(wp) == ID_MYBUTTON))
+                    MessageBox(hw, "You pressed my button", "MessageBox", MB_OK | MB_ICONWARNING);
+                if ((HIWORD(wp) == 0) && (LOWORD(wp) == ID_ROMAN_MYBUTTON))
+                    MessageBox(hw, "Roma is my button", "Roma Info", MB_OK | MB_ICONWARNING);
+                if ((HIWORD(wp) == 0) && (LOWORD(wp) >= 3 && (LOWORD(wp) < 8)))
+                    MessageBox(hw, "There is PyCharm", "PyCharm", MB_OK | MB_ICONWARNING);
+
+//                    system("\"C:\\Program Files\\JetBrains\\PyCharm Community Edition 2023.1\\bin\\pycharm64.exe\"");
 //                MessageBox(hw, "This is Misha", "Misha Info", MB_OK | MB_ICONWARNING);
 
-            return 0;
+                wsprintf(buf, "Command code: %d", LOWORD(wp));
+                DialogBox(h, "Ex4_Dlg", hw, DlgProc);
+                return 0;
+            }
         case WM_DESTROY:
             /* пользователь закрыл окно, программа может завершаться */
             PostQuitMessage(0);
